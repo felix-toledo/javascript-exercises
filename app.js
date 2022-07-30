@@ -11,9 +11,7 @@
     // El nombre del alumno cuando el profesor quiere poner la nota debe ser igual a el nombre que puso el alumno cuando se registró para que el sistema lo encuentre.
     // Cada vez que la página se recarga, se pierden todos los usuarios y los datos.
 
-
-
-
+    
 //Creación de la clase para crear todas las cuentas.
 class cuentaSistema{
     constructor(nombre, perfil, usuario, contrasena, notasAlumno, promedio){
