@@ -1,10 +1,15 @@
 // Sistema para alumnos y profesores.
 
-// Al ser alumnos vas a poder ver tu promedio final, al ser profesor vas a poder agregar la nota.
+// Al ser alumnos vas a poder ver tus notas y promedio final, al ser profesor vas a poder agregar las notas.
 
 // Cada uno tendrá su usuario y contraseña.
 
 // Si bien no es un login, es lo que puedo hacer con los conocimientos que tengo hasta ahora.
+
+//******** TENER EN CUENTA  */
+    // El alumno debe crear una cuenta para que el profesor pueda cargar las notas.
+    // El nombre del alumno cuando el profesor quiere poner la nota debe ser igual a el nombre que puso el alumno cuando se registró para que el sistema lo encuentre.
+    // Cada vez que la página se recarga, se pierden todos los usuarios y los datos.
 
 
 
@@ -26,7 +31,7 @@ let cuenta= [new cuentaSistema("Felix Toledo", "1", "ftoledo", "12345", [], 0),
             new cuentaSistema("Juan Perez", "2", "jperez", "1234", [], 0)];
 let notas;
 let sumaNotas = 0;
-let promedioo;
+let promedio;
 let encontrarUsuario;
 
 //Funcion para logearse
@@ -41,6 +46,7 @@ function menuPrincipal(){
             break;
         case 3:
             alert("Gracias por utilizar el sistema!");
+            console.log()
             break;
         default:
             alert("Debe dar una respuesta válida");
@@ -86,7 +92,7 @@ function chequeoUsuario(nombreUsuario){
 //Funcion Login
 function login(){
     let rptaLogin = prompt("Ingrese su usuario");
-    while(chequeoUsuario(rptaLogin)){
+    if (chequeoUsuario(rptaLogin)){
         encontrarUsuario = cuenta.find((user)=> user.usuario === rptaLogin);
         let contrasena = prompt("Ingrese su contraseña");
             if (contrasena == encontrarUsuario.contrasena){
@@ -100,8 +106,12 @@ function login(){
                 }
             } else {
                 alert("Contraseña Erronea");
+                !chequeoUsuario;
                 menuPrincipal();
             }
+    } else {
+        alert("No hay un usuario con el idUsuario: " +rptaLogin)
+        menuPrincipal();
     }
 }
 
@@ -113,14 +123,14 @@ function ingresarNotas(){
         alert("Ud. eligió a: " +encontrarUsuario.nombre);
         let contador = parseInt(prompt("Cuantas notas desea ingresar?"));
         for (let i = 0; i<contador; i++){
-            notas = parseInt(prompt("Ingrese la " +(i+1) +" nota"))
+            notas = parseInt(prompt("Ingrese la " +(i+1) +" nota"));
             encontrarUsuario.notas.push(notas);
             sumaNotas = sumaNotas + notas;
             console.log(sumaNotas);
         }
-        promedioo = sumaNotas / contador;
-        alert("El promedio del alumno es: " +promedioo)
-        encontrarUsuario.promedio = promedioo;
+        promedio = sumaNotas / contador;
+        alert("El promedio del alumno es: " +promedio);
+        encontrarUsuario.promedio = promedio;
         sumaNotas = 0;
     } else {
         alert("Para que " +rptaNotas +" pueda recibir notas, primero debe crearse un usuario.")
