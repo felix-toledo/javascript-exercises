@@ -8,40 +8,33 @@
 
 
 
-//Creación del perfil profesor.
-class perfilProfesor{
-    constructor(nombre, usuario, contrasena){
+
+//Creación de la clase para crear todas las cuentas.
+class cuentaSistema{
+    constructor(nombre, perfil, usuario, contrasena, notasAlumno, promedio){
         this.nombre = nombre;
+        this.perfil = perfil;
         this.usuario = usuario;
         this.contrasena = contrasena;
-    }
-
-}
-
-//Creación del perfil alumno.
-class perfilAlumno{
-    constructor(nombre, usuario, contrasena, promedio){
-        this.nombre = nombre;
-        this.usuario = usuario;
-        this.contrasena = contrasena;
+        this.notas = notasAlumno;
         this.promedio = promedio;
     }
 }
 
 //Creación del array que va a contener todas las cuentas, creando una cuenta para poder probar el sistema sin tener que estar creando todo el tiempo.
-let cuentaProfesor = [new perfilProfesor("Felix Toledo", "ftoledo", "1234")];
-let cuentaAlumno = [new perfilAlumno("Juan Perez", "jperez", "12345")];
+let cuenta= [new cuentaSistema("Felix Toledo", "1", "ftoledo", "12345", [], 0), 
+            new cuentaSistema("Juan Perez", "2", "jperez", "1234", [], 0)];
 let notas;
 let sumaNotas = 0;
 let promedioo;
-let encontrarUsuario2;
+let encontrarUsuario;
 
 //Funcion para logearse
 function menuPrincipal(){
     let rptaLogin = parseInt(prompt("Ingrese una opcion: 1- Crear Usuario // 2- Ingresar con usuario 3-Salir"));
     switch (rptaLogin){
         case 1:
-            crearUsuario();
+            createUser();
             break;
         case 2:
             login();
@@ -56,54 +49,55 @@ function menuPrincipal(){
     }
 }
 
-//Funcion para crear usuario
-function crearUsuario(){
-    let rptaCreacion = parseInt(prompt("Que rol va a cumplir? 1-Profesor // 2-Alumno"))
-    switch (rptaCreacion){
-        case 1:
-            let rptaNombre = prompt ("Ingrese su nombre");
-            let rptaUsuario = prompt ("ingrese su usuario");
-            let rptaContrasena = prompt ("ingrese contraseña");
-            cuentaProfesor.push(new perfilProfesor(rptaNombre, rptaUsuario, rptaContrasena));
-            alert("Hola! " +rptaNombre + " // Usuario:" +rptaUsuario + " // Contraseña:" +rptaContrasena);
-            menuPrincipal();
+
+//Crea un usuario agregando este al array de cuenta.
+function createUser(){
+    let rptaNombre = prompt("Ingrese su nombre");
+    let rptaPerfil = prompt("Ud. es profesor o alumno? 1- Profesor 2- Alumno");
+    let rptaUsuario = prompt("Ingrese el nombre de usuario que desea");
+    let rptaContrasena = prompt("Ingrese la contraseña deseada");
+    if (chequeoUsuario(rptaUsuario) == false){
+                cuenta.push(new cuentaSistema(rptaNombre, rptaPerfil, rptaUsuario, rptaContrasena, [], 0));
+                alert("Hola! " +rptaNombre + " // Perfil:" +respuestaDelPerfil(rptaPerfil) + " // Usuario:" +rptaUsuario + " // Contraseña:" +rptaContrasena);
+                menuPrincipal();
+    } else {
+        alert("Ya hay un usuario con el idUsuario: " +rptaUsuario);
+        createUser()
+    }
+}
+
+//Funcion que devuelve que perfil sos para que te avise.
+function respuestaDelPerfil(unoODos){
+    switch (unoODos){
+        case "1":
+            return "Profesor"; 
             break;
-        case 2: 
-            let rptaNombre2 = prompt ("Ingrese su nombre");
-            let rptaUsuario2 = prompt ("ingrese su usuario");
-            let rptaContrasena2 = prompt ("ingrese contraseña");
-            cuentaAlumno.push(new perfilAlumno(rptaNombre2, rptaUsuario2, rptaContrasena2, 0));
-            alert("Hola! " +rptaNombre2 + " // Usuario:" +rptaUsuario2 + " // Contraseña:" +rptaContrasena2);
-            menuPrincipal();
-            break;
-        default:
-            alert("Debe dar una respuesta válida");
-            menuPrincipal();
+        case "2": 
+            return "Alumno";
             break;
     }
 }
 
+//Esta funcion retorna TRUE o FALSE para saber si esa cuenta existe o no.
+function chequeoUsuario(nombreUsuario){
+    return cuenta.some((usuario) => usuario.usuario == nombreUsuario);
+}
+
 //Funcion Login
 function login(){
-    let rptaLogin = parseInt(prompt("Elija una opción: 1- Profesor // 2- Alumno"));
-    switch(rptaLogin){
-        case 1:
-            let usuario = prompt("Ingrese su usuario");
-            const encontrarUsuario = cuentaProfesor.find((user)=> user.usuario === usuario);
-            let contrasena = prompt("Ingrese su contraseña");
+    let rptaLogin = prompt("Ingrese su usuario");
+    while(chequeoUsuario(rptaLogin)){
+        encontrarUsuario = cuenta.find((user)=> user.usuario === rptaLogin);
+        let contrasena = prompt("Ingrese su contraseña");
             if (contrasena == encontrarUsuario.contrasena){
-                ingresarNotas();
-            } else {
-                alert("Contraseña Erronea");
-                menuPrincipal();
-            }
-            break;
-        case 2:
-            let usuario2 = prompt("Ingrese su usuario");
-            encontrarUsuario2 = cuentaAlumno.find((user)=> user.usuario === usuario2);
-            let contrasena2 = prompt("Ingrese su contraseña");
-            if (contrasena2 == encontrarUsuario2.contrasena){
-                leerPromedio();
+                switch (encontrarUsuario.perfil){
+                    case "1":
+                        ingresarNotas();
+                        break;
+                    case "2": 
+                        leerPromedio();
+                        break;
+                }
             } else {
                 alert("Contraseña Erronea");
                 menuPrincipal();
@@ -114,12 +108,13 @@ function login(){
 //Funcion para que el profesor ingrese las notas
 function ingresarNotas(){
     let rptaNotas = prompt("Ingrese nombre del alumno al que desea agregar las notas");
-    const encontrarUsuario = cuentaAlumno.find((user)=> user.nombre === rptaNotas);
+    encontrarUsuario = cuenta.find((user)=> user.nombre === rptaNotas);
     if (rptaNotas == encontrarUsuario.nombre){
         alert("Ud. eligió a: " +encontrarUsuario.nombre);
         let contador = parseInt(prompt("Cuantas notas desea ingresar?"));
         for (let i = 0; i<contador; i++){
             notas = parseInt(prompt("Ingrese la " +(i+1) +" nota"))
+            encontrarUsuario.notas.push(notas);
             sumaNotas = sumaNotas + notas;
             console.log(sumaNotas);
         }
@@ -135,15 +130,15 @@ function ingresarNotas(){
 
 //Funcion para que el alumno pueda leer sus promedios
 function leerPromedio(){
-    if (encontrarUsuario2.promedio > 0){
-        alert ("Su promedio es: " +encontrarUsuario2.promedio);
+    if (encontrarUsuario.promedio > 0){
+        alert("Sus notas fueron" + encontrarUsuario.notas);
+        alert ("Su promedio es: " +encontrarUsuario.promedio);
         menuPrincipal();
     } else {
         alert ("El profesor aún no cargó su promedio");
         menuPrincipal();
     }
 }
-
 
 //Empieza el programa
 menuPrincipal();
